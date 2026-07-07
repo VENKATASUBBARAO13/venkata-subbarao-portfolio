@@ -1,37 +1,51 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useInView, animate } from "framer-motion";
+
+interface AnimatedCounterProps {
+  value: number;
+  suffix?: string;
+  className?: string;
+}
 
 export default function AnimatedCounter({
   value,
   suffix = "",
   className,
-}: {
-  value: number;
-  suffix?: string;
-  className?: string;
-}) {
+}: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, { damping: 30, stiffness: 90 });
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, {
+    once: true,
+    margin: "-80px",
+  });
 
   useEffect(() => {
-    if (inView) motionValue.set(value);
-  }, [inView, motionValue, value]);
+    if (!inView || !ref.current) return;
 
-  useEffect(() => {
-    return springValue.on("change", (latest) => {
-      if (ref.current) {
-        ref.current.textContent = Math.floor(latest).toString() + suffix;
-      }
+    const controls = animate(0, value, {
+      duration: 2,
+      ease: "easeOut",
+      onUpdate(latest) {
+        if (!ref.current) return;
+
+        if (Number.isInteger(value)) {
+          ref.current.textContent =
+            Math.round(latest).toString() + suffix;
+        } else {
+          ref.current.textContent =
+            latest.toFixed(2) + suffix;
+        }
+      },
     });
-  }, [springValue, suffix]);
+
+    return () => controls.stop();
+  }, [inView, value, suffix]);
 
   return (
     <motion.span ref={ref} className={className}>
-      0{suffix}
+      {Number.isInteger(value) ? "0" : "0.00"}
+      {suffix}
     </motion.span>
   );
 }
