@@ -15,9 +15,10 @@ export default function AnimatedCounter({
   className,
 }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
+
   const inView = useInView(ref, {
     once: true,
-    margin: "-80px",
+    amount: 0.2,
   });
 
   useEffect(() => {
@@ -26,15 +27,26 @@ export default function AnimatedCounter({
     const controls = animate(0, value, {
       duration: 2,
       ease: "easeOut",
+
       onUpdate(latest) {
         if (!ref.current) return;
 
         if (Number.isInteger(value)) {
           ref.current.textContent =
-            Math.round(latest).toString() + suffix;
+            Math.min(Math.round(latest), value).toString() + suffix;
         } else {
           ref.current.textContent =
-            latest.toFixed(2) + suffix;
+            Math.min(latest, value).toFixed(2) + suffix;
+        }
+      },
+
+      onComplete() {
+        if (!ref.current) return;
+
+        if (Number.isInteger(value)) {
+          ref.current.textContent = value.toString() + suffix;
+        } else {
+          ref.current.textContent = value.toFixed(2) + suffix;
         }
       },
     });
