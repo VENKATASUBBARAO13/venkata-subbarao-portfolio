@@ -72,8 +72,6 @@ portfolio/
 
 ## 📸 Portfolio Preview
 
-> Replace this image with your portfolio homepage screenshot.
-
 ```
 public/images/portfolio-preview.png
 ```
