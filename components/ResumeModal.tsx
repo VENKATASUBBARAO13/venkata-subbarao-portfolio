@@ -147,7 +147,7 @@ export default function ResumeModal({
 
               <div className="flex items-center gap-1.5">
                 <button
-                  onClick={() => setZoom((z) => Math.max(0.6, +(z - 0.15).toFixed(2)))}
+                  onClick={() => setZoom((z) => Math.max(0.3, +(z - 0.15).toFixed(2)))}
                   aria-label="Zoom out"
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-ink-soft hover:border-primary/40 hover:text-primary dark:border-slate-600 dark:text-slate-300"
                 >
