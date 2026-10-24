@@ -13,7 +13,9 @@ type CommonProps = {
 type AnchorProps = CommonProps & {
   as: "a";
   href: string;
-  download?: boolean;
+  download?: boolean | string;
+  target?: string;
+  rel?: string;
 };
 
 type ButtonProps = CommonProps & {
@@ -76,6 +78,8 @@ export default function MagneticButton(props: AnchorProps | ButtonProps) {
         <a
           href={props.href}
           download={props.download}
+          target={props.target}
+          rel={props.rel}
           className={`relative overflow-hidden ${props.className ?? ""}`}
         >
           {inner}

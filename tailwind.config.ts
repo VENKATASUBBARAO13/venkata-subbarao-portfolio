@@ -23,6 +23,10 @@ const config: Config = {
           DEFAULT: "#06B6D4",
           light: "#67E8F9",
         },
+        aws: {
+          DEFAULT: "#FF9900",
+          soft: "#FFF4E5",
+        },
         surface: {
           DEFAULT: "#F8FAFC",
           dark: "#0B1120",

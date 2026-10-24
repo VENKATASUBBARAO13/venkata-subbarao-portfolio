@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function CursorGlow() {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const isFinePointer = window.matchMedia("(pointer: fine)").matches;
@@ -12,13 +11,15 @@ export default function CursorGlow() {
     if (!isFinePointer || reduced) return;
 
     let raf = 0;
-    let x = 0;
-    let y = 0;
+    let hasMoved = false;
 
     const handleMove = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
-      if (!visible) setVisible(true);
+      const x = e.clientX;
+      const y = e.clientY;
+      if (!hasMoved && ref.current) {
+        hasMoved = true;
+        ref.current.style.opacity = "1";
+      }
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         if (ref.current) {
@@ -27,20 +28,18 @@ export default function CursorGlow() {
       });
     };
 
-    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mousemove", handleMove, { passive: true });
     return () => {
       window.removeEventListener("mousemove", handleMove);
       cancelAnimationFrame(raf);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[1] hidden h-[400px] w-[400px] rounded-full bg-primary/[0.06] blur-3xl transition-opacity duration-500 md:block"
-      style={{ opacity: visible ? 1 : 0 }}
+      className="pointer-events-none fixed left-0 top-0 z-[1] hidden h-[400px] w-[400px] rounded-full bg-primary/[0.06] blur-3xl opacity-0 transition-opacity duration-500 will-change-transform md:block"
     />
   );
 }

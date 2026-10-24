@@ -7,7 +7,7 @@ export default function LoadingScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1100);
+    const t = setTimeout(() => setLoading(false), 600);
     return () => clearTimeout(t);
   }, []);
 
@@ -16,7 +16,7 @@ export default function LoadingScreen() {
       {loading && (
         <motion.div
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-4 bg-surface dark:bg-surface-dark"
         >
           <div className="font-display text-2xl font-semibold tracking-tight text-secondary dark:text-white">

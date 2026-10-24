@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import ScrollProgress from "@/components/ScrollProgress";
 import CursorGlow from "@/components/CursorGlow";
 import BackToTop from "@/components/BackToTop";
 import CommandPalette from "@/components/CommandPalette";
@@ -26,30 +25,35 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const seoDescription =
+  "Venkata Subbarao is a 2026 Computer Science Engineering graduate with hands-on AWS cloud project experience covering application deployment, cloud networking, monitoring, security, automation, and serverless workflows.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://venkatasubbarao.dev"),
-  title: `${profile.shortName} — Python & Full Stack Developer`,
-  description: profile.summary,
+  metadataBase: new URL(profile.portfolioUrl),
+  title: `${profile.shortName} | AWS Cloud Engineer`,
+  description: seoDescription,
   keywords: [
     "Ventrapragada Venkata Subbarao",
+    "AWS Cloud Engineer",
+    "Cloud Computing",
+    "Cloud Engineer Fresher",
+    "Cloud Infrastructure",
+    "AWS Projects",
     "Python Developer",
-    "Full Stack Developer",
-    "Django Developer",
-    "Software Engineer Fresher",
     "Portfolio",
   ],
   authors: [{ name: profile.name }],
   openGraph: {
-    title: `${profile.shortName} — Python & Full Stack Developer`,
-    description: profile.summary,
-    url: "https://venkatasubbarao.dev",
+    title: `${profile.shortName} | AWS Cloud Engineer`,
+    description: seoDescription,
+    url: profile.portfolioUrl,
     siteName: profile.shortName,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.shortName} — Python & Full Stack Developer`,
-    description: profile.summary,
+    title: `${profile.shortName} | AWS Cloud Engineer`,
+    description: seoDescription,
   },
   robots: { index: true, follow: true },
 };
@@ -61,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrains.variable} font-body antialiased selection:bg-primary/20`}
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <ScrollProgress />
           <CursorGlow />
           {children}
           <BackToTop />

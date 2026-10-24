@@ -1,63 +1,40 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useInView, animate } from "framer-motion";
-
-interface AnimatedCounterProps {
-  value: number;
-  suffix?: string;
-  className?: string;
-}
+import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 
 export default function AnimatedCounter({
   value,
   suffix = "",
+  decimals = 0,
   className,
-}: AnimatedCounterProps) {
+}: {
+  value: number;
+  suffix?: string;
+  decimals?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
-
-  const inView = useInView(ref, {
-    once: true,
-    amount: 0.2,
-  });
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, { damping: 30, stiffness: 90 });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   useEffect(() => {
-    if (!inView || !ref.current) return;
+    if (inView) motionValue.set(value);
+  }, [inView, motionValue, value]);
 
-    const controls = animate(0, value, {
-      duration: 2,
-      ease: "easeOut",
-
-      onUpdate(latest) {
-        if (!ref.current) return;
-
-        if (Number.isInteger(value)) {
-          ref.current.textContent =
-            Math.min(Math.round(latest), value).toString() + suffix;
-        } else {
-          ref.current.textContent =
-            Math.min(latest, value).toFixed(2) + suffix;
-        }
-      },
-
-      onComplete() {
-        if (!ref.current) return;
-
-        if (Number.isInteger(value)) {
-          ref.current.textContent = value.toString() + suffix;
-        } else {
-          ref.current.textContent = value.toFixed(2) + suffix;
-        }
-      },
+  useEffect(() => {
+    return springValue.on("change", (latest) => {
+      if (ref.current) {
+        const formatted = decimals > 0 ? latest.toFixed(decimals) : Math.floor(latest).toString();
+        ref.current.textContent = formatted + suffix;
+      }
     });
-
-    return () => controls.stop();
-  }, [inView, value, suffix]);
+  }, [springValue, suffix, decimals]);
 
   return (
     <motion.span ref={ref} className={className}>
-      {Number.isInteger(value) ? "0" : "0.00"}
-      {suffix}
+      0{suffix}
     </motion.span>
   );
 }

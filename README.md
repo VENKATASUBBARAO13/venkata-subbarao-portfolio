@@ -1,198 +1,97 @@
-# 🌐 Venkata Subbarao – Developer Portfolio
+# Ventrapragada Venkata Subbarao — Portfolio
 
-A modern, responsive, and interactive personal developer portfolio built with **Next.js 14**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**.
+A premium, animated developer portfolio built with Next.js 14 (App Router), TypeScript,
+Tailwind CSS, and Framer Motion.
 
-Designed to showcase my skills, projects, certifications, GitHub activity, resume, and professional journey as a Software Engineer.
-
----
-
-## 🚀 Live Demo
-
-🔗 https://venkata-subbarao-portfolio.vercel.app
-
----
-
-## ✨ Features
-
-- 🎨 Modern & Responsive UI
-- 🌙 Dark / Light Theme Toggle
-- 📄 Resume Download & Preview
-- 💼 Featured Projects Showcase
-- 🛠️ Skills & Technology Stack
-- 📚 Professional Journey Timeline
-- 🏆 Certifications Section
-- 📊 GitHub Activity Integration
-- ✨ Smooth Animations (Framer Motion)
-- 📱 Fully Mobile Responsive
-- 🔍 Custom 404 Page
-- ⚡ Optimized Performance
-- 🌐 SEO Friendly
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- Next.js 14
-- React
-- TypeScript
-- Tailwind CSS
-
-### Animation
-- Framer Motion
-
-### Icons
-- Lucide React
-
-### Deployment
-- Vercel
-
----
-
-## 📂 Project Structure
-
-```
-portfolio/
-│
-├── app/
-├── components/
-├── lib/
-├── public/
-│   ├── certificates/
-│   ├── images/
-│   └── resume.pdf
-│
-├── package.json
-├── tailwind.config.ts
-├── tsconfig.json
-└── README.md
-```
-
----
-
-## 📸 Portfolio Preview
-
-```
-public/images/portfolio-preview.png
-```
-
-Example:
-
-![Portfolio Preview](public/images/portfolio-preview.png)
-
----
-
-## 🚀 Getting Started
-
-Clone the repository
-
-```bash
-git clone https://github.com/VENKATASUBBARAO13/venkata-subbarao-portfolio.git
-```
-
-Go to the project
-
-```bash
-cd venkata-subbarao-portfolio
-```
-
-Install dependencies
+## Getting started
 
 ```bash
 npm install
-```
-
-Run locally
-
-```bash
 npm run dev
 ```
 
-Open
+Open [http://localhost:3000](http://localhost:3000).
+
+## Before you deploy
+
+1. **Resume** — drop your actual resume PDF at `public/resume.pdf`. The "Download Resume"
+   button in the hero links to this path.
+2. **Email** — update `profile.email` in `lib/data.ts` with your real email address (a
+   placeholder is currently set).
+3. **Content** — all copy (bio, projects, education, skills, achievements) lives in one
+   place: `lib/data.ts`. Edit it there and every section updates automatically.
+4. **GitHub stats** — the GitHub section pulls live stat cards from
+   `github-readme-stats.vercel.app` for the username `VENKATASUBBARAO13`. If you fork
+   this for someone else, update the `username` constant in `components/GithubStats.tsx`.
+5. **Favicon / OG image** — add `app/icon.png` and an Open Graph image if you want richer
+   link previews; Next.js will pick them up automatically.
+
+## Project structure
 
 ```
-http://localhost:3000
+app/
+  layout.tsx          Root layout: fonts, metadata, theme provider, global chrome
+  page.tsx            Assembles all sections in order
+  globals.css         Design tokens, custom scrollbar, grid background, utilities
+components/
+  Navbar.tsx           Sticky nav with animated mobile menu
+  Hero.tsx             Typing effect, floating blobs, magnetic CTAs
+  About.tsx            Summary + animated stat counters
+  EducationTimeline.tsx  Scroll-linked animated timeline (education)
+  ProjectsTimeline.tsx   Scroll-linked animated timeline (projects)
+  TimelineSpine.tsx    Shared scroll-progress spine used by both timelines
+  Skills.tsx           Grouped animated skill bars
+  Achievements.tsx     Certification cards
+  GithubStats.tsx      Live GitHub stat cards + profile links
+  Contact.tsx          Contact form (opens the visitor's email client) + copy-email
+  Footer.tsx           Minimal footer with social icons
+  CommandPalette.tsx   ⌘K / Ctrl+K quick navigation
+  ScrollProgress.tsx   Top-of-page scroll progress bar
+  CursorGlow.tsx       Soft mouse-follower glow (desktop, motion-safe only)
+  BackToTop.tsx        Floating back-to-top button
+  ThemeToggle.tsx      Light/dark toggle
+  LoadingScreen.tsx    Brief entrance loading screen
+  MagneticButton.tsx   Reusable magnetic-hover button with ripple
+  AnimatedCounter.tsx  Spring-driven number counter
+lib/
+  data.ts              Single source of truth for all portfolio content
+  utils.ts             cn() className helper
 ```
 
----
+## Design system
 
-## 📄 Resume
+| Token | Value |
+|---|---|
+| Primary | `#2563EB` |
+| Secondary | `#0F172A` |
+| Accent | `#06B6D4` |
+| Background | `#F8FAFC` |
+| Display font | Space Grotesk |
+| Body font | Inter |
+| Mono font | JetBrains Mono |
 
-The portfolio includes:
+Dark mode is supported throughout via Tailwind's `class` strategy and `next-themes`.
+All motion respects `prefers-reduced-motion`.
 
-- Resume Preview
-- Resume Download
+## Deployment (Vercel)
 
-Simply replace
+1. Push this project to a GitHub repository.
+2. Go to [vercel.com/new](https://vercel.com/new) and import the repository.
+3. Vercel auto-detects Next.js — no configuration needed. Click **Deploy**.
+4. Every push to `main` redeploys automatically.
 
+Alternatively, from the CLI:
+
+```bash
+npm install -g vercel
+vercel
 ```
-public/resume.pdf
-```
 
-with your latest resume.
+## Scripts
 
----
-
-## 🏅 Certifications
-
-Featured certifications include:
-
-- Tata GenAI Powered Data Analytics
-- Tata Data Visualisation
-- Microsoft Azure Fundamentals
-- Google Cloud AI
-- TCS iON Career Edge
-- Python Certifications
-
----
-
-## 📫 Connect With Me
-
-**Name**
-
-Venkata Subbarao Ventrapragada
-
-**Email**
-
-venkatasubbarao1305@gmail.com
-
-**LinkedIn**
-
-https://www.linkedin.com/in/ventrapragada-venkata-subbarao
-
-**GitHub**
-
-https://github.com/VENKATASUBBARAO13
-
----
-
-## 👨‍💻 About Me
-
-I'm a Computer Science graduate passionate about building scalable web applications using Python, Django, JavaScript, and MySQL.
-
-My interests include:
-
-- Full Stack Development
-- Backend Engineering
-- Artificial Intelligence
-- Cloud Computing
-- REST APIs
-- Software Engineering
-
-I enjoy creating practical software solutions and continuously learning modern technologies.
-
----
-
-## ⭐ Support
-
-If you like this project, consider giving it a ⭐ on GitHub.
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License.
-
----
-
-Made with ❤️ by **Venkata Subbarao**
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the local dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint |

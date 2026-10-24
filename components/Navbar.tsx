@@ -7,9 +7,11 @@ import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { label: "About", href: "#about" },
-  { label: "Journey", href: "#education" },
+  { label: "AWS Skills", href: "#aws-skills" },
+  { label: "Learning Journey", href: "#learning-journey" },
+  { label: "Labs", href: "#labs" },
   { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
+  { label: "Certifications", href: "#certifications" },
   { label: "GitHub", href: "#github" },
   { label: "Contact", href: "#contact" },
 ];
@@ -19,7 +21,15 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -49,12 +59,12 @@ export default function Navbar() {
           VS<span className="text-primary">.</span>
         </a>
 
-        <ul className="hidden items-center gap-9 md:flex">
+        <ul className="hidden items-center gap-6 lg:flex">
           {links.map((l) => (
             <li key={l.href}>
               <button
                 onClick={() => go(l.href)}
-                className="group relative text-sm font-medium text-ink-soft transition-colors hover:text-primary dark:text-slate-300"
+                className="group relative whitespace-nowrap text-sm font-medium text-ink-soft transition-colors hover:text-primary dark:text-slate-300"
               >
                 {l.label}
                 <span className="absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
@@ -63,17 +73,17 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <ThemeToggle />
           <button
             onClick={() => go("#contact")}
-            className="rounded-full bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary dark:bg-primary"
+            className="whitespace-nowrap rounded-full bg-secondary px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary dark:bg-primary"
           >
             Let&apos;s talk
           </button>
         </div>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <button
             onClick={() => setOpen((o) => !o)}
@@ -92,7 +102,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-slate-200 bg-surface md:hidden dark:border-slate-800 dark:bg-surface-dark"
+            className="overflow-hidden border-t border-slate-200 bg-surface lg:hidden dark:border-slate-800 dark:bg-surface-dark"
           >
             <ul className="container-px flex flex-col gap-1 py-4">
               {links.map((l, i) => (
