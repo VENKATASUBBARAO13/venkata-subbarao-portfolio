@@ -70,10 +70,7 @@ export default function ResumeModal({
       setStatus("loading");
       try {
         const pdfjsLib = await import("pdfjs-dist");
-        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
-          import.meta.url
-        ).toString();
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
         if (!pdfDocRef.current) {
           pdfDocRef.current = await pdfjsLib.getDocument(profile.resumeUrl).promise;
