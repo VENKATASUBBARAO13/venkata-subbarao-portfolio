@@ -1,22 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Code2, Cloud, Brain, Layers } from "lucide-react";
+import { Cloud, ShieldCheck, Layers, Activity, Zap, Terminal } from "lucide-react";
 import { profile } from "@/lib/data";
+import { awsProjects } from "@/lib/aws-data";
 import AnimatedCounter from "./AnimatedCounter";
 
 const pillars = [
-  { icon: Code2, label: "Backend Development", detail: "Python, Django, REST APIs, MySQL" },
-  { icon: Layers, label: "Full Stack Development", detail: "HTML, CSS, JavaScript, Django" },
-  { icon: Brain, label: "Applied AI", detail: "PyTorch, OpenCV, ResNet18" },
-  { icon: Cloud, label: "Cloud & Deployment", detail: "Render, Git, GitHub" },
+  { icon: Cloud, label: "Infrastructure & Deployment", detail: "EC2, RDS, ALB, Terraform" },
+  { icon: ShieldCheck, label: "Networking & Security", detail: "VPC, Security Groups, IAM, ACM" },
+  { icon: Layers, label: "High Availability", detail: "ALB, Target Groups, health checks" },
+  { icon: Activity, label: "Monitoring & Logging", detail: "CloudWatch, Prometheus, Grafana" },
+  { icon: Zap, label: "Serverless Automation", detail: "Lambda, EventBridge, S3, Boto3" },
+  { icon: Terminal, label: "Linux & Troubleshooting", detail: "Amazon Linux, Nginx, systemd" },
 ];
 
+// Computed from the real project data in lib/aws-data.ts, so these numbers
+// can never drift away from what the featured repositories actually show.
+const awsServicesAcrossProjects = new Set(awsProjects.flatMap((p) => p.awsServices)).size;
+
 const stats = [
-  { value: 3, suffix: "", label: "Full-stack projects shipped" },
-  { value: 1100, suffix: "+", label: "Images used to train DeepFake model" },
-  { value: 8.18, suffix: "", label: "CGPA" },
-  { value: 2026, suffix: "", label: "Graduating year" },
+  { value: awsProjects.length, decimals: 0, label: "AWS Projects on GitHub" },
+  { value: awsServicesAcrossProjects, decimals: 0, label: "AWS Services Used Across Projects" },
+  { value: 8.18, decimals: 2, label: "CGPA" },
+  { value: 2026, decimals: 0, label: "Graduation Year" },
 ];
 
 const fadeUp = {
@@ -40,7 +47,7 @@ export default function About() {
               About
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold leading-tight tracking-tight text-secondary dark:text-white sm:text-4xl">
-              Full Stack Developer. Backend at heart.
+              AWS Cloud Engineer in Progress.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-ink-soft dark:text-slate-400">
               {profile.summary}
@@ -53,7 +60,7 @@ export default function About() {
               {stats.map((s) => (
                 <div key={s.label}>
                   <div className="font-display text-3xl font-semibold text-secondary dark:text-white">
-                    <AnimatedCounter value={s.value} suffix={s.suffix} />
+                    <AnimatedCounter value={s.value} decimals={s.decimals} />
                   </div>
                   <p className="mt-1 text-xs text-ink-faint">{s.label}</p>
                 </div>

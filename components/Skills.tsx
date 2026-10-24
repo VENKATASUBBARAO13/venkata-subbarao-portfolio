@@ -22,41 +22,51 @@ export default function Skills() {
           </h2>
         </motion.div>
 
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {skills.map((group, i) => (
             <motion.div
               key={group.label}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, delay: (i % 2) * 0.08 }}
-              className="rounded-2xl border border-slate-200 bg-white p-7 shadow-card dark:border-slate-700 dark:bg-surface-cardDark"
+              transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
+              whileHover={{ y: -4 }}
+              className={`rounded-2xl border shadow-card transition-shadow hover:shadow-cardHover ${
+                group.featured
+                  ? "border-primary/30 bg-gradient-to-br from-primary/5 via-white to-accent/5 p-7 shadow-glow dark:border-primary/40 dark:from-primary/10 dark:via-surface-cardDark dark:to-accent/10 lg:col-span-2"
+                  : group.compact
+                  ? "border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-surface-cardDark"
+                  : "border-slate-200 bg-white p-7 dark:border-slate-700 dark:bg-surface-cardDark"
+              }`}
             >
-              <div className="flex items-baseline justify-between">
-                <h3 className="font-display text-base font-semibold text-secondary dark:text-white">
-                  {group.label}
-                </h3>
-                <span className="font-mono text-xs text-ink-faint">{group.level}%</span>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className={group.compact ? "text-base" : "text-xl"}>{group.emoji}</span>
+                  <h3
+                    className={`font-display font-semibold text-secondary dark:text-white ${
+                      group.compact ? "text-sm" : "text-base"
+                    }`}
+                  >
+                    {group.label}
+                  </h3>
+                </div>
               </div>
 
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${group.level}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.1 }}
-                  className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
-                />
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className={`flex flex-wrap gap-2 ${group.compact ? "mt-4" : "mt-5"}`}>
                 {group.items.map((item) => (
-                  <span
+                  <motion.span
                     key={item}
-                    className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-ink-soft dark:bg-surface-dark dark:text-slate-300"
+                    whileHover={{ y: -2, scale: 1.04 }}
+                    className={`rounded-full font-medium ${
+                      group.compact ? "px-2.5 py-0.5 text-[11px]" : "px-3 py-1 text-xs"
+                    } ${
+                      group.featured
+                        ? "bg-white text-primary shadow-sm dark:bg-surface-dark dark:text-primary-light"
+                        : "bg-surface text-ink-soft dark:bg-surface-dark dark:text-slate-300"
+                    }`}
                   >
                     {item}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>

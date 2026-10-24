@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Download, Eye, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Cloud, Download, Eye, Github, Linkedin, Mail } from "lucide-react";
 import { profile, heroTechBadges } from "@/lib/data";
 import MagneticButton from "./MagneticButton";
 import ResumeModal from "./ResumeModal";
@@ -77,7 +77,7 @@ export default function Hero() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium tracking-wide text-primary"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            2026 Graduate • Open to Opportunities
+            {profile.heroEyebrow}
           </motion.p>
 
           <motion.h1
@@ -146,11 +146,21 @@ export default function Hero() {
             <MagneticButton
               as="a"
               href={profile.resumeUrl}
-              download
+              download={profile.resumeFileName}
               className="flex items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-medium text-white shadow-cardHover transition-transform duration-200 hover:scale-[1.03] hover:bg-primary dark:bg-primary"
             >
               <Download className="h-4 w-4" />
               Download Resume
+            </MagneticButton>
+            <MagneticButton
+              as="a"
+              href={profile.linkedinPostsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-white shadow-cardHover transition-transform duration-200 hover:scale-[1.03] hover:bg-primary-dark"
+            >
+              <Cloud className="h-4 w-4" />
+              View AWS Journey
             </MagneticButton>
             <MagneticButton
               as="button"
@@ -227,22 +237,32 @@ export default function Hero() {
               <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
               <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-              <span className="ml-2 text-ink-faint">status.py</span>
+              <span className="ml-2 text-ink-faint">cloud_engineer.py</span>
             </div>
-            <div className="space-y-2 leading-6">
+            <div className="space-y-1.5 leading-6">
               <p>
-                <span className="text-primary">class</span> Engineer:
+                <span className="text-primary">class</span> CloudEngineer:
               </p>
-              <p className="pl-4">stack = [&quot;Python&quot;, &quot;Django&quot;, &quot;MySQL&quot;]</p>
-              <p className="pl-4">learning = [&quot;AWS&quot;, &quot;AI&quot;, &quot;Cloud&quot;]</p>
-              <p className="pl-4">
-                <span className="text-primary">def</span> ship(self):
+              <p
+                className="break-words"
+                style={{ paddingLeft: "2.5rem", textIndent: "-1.5rem" }}
+              >
+                focus = [&quot;AWS&quot;, &quot;Cloud&quot;,
+                &quot;Infrastructure&nbsp;as&nbsp;Code&quot;]
               </p>
-              <p className="pl-8 text-accent">return &quot;production-ready&quot;</p>
+              <p
+                className="break-words"
+                style={{ paddingLeft: "2.5rem", textIndent: "-1.5rem" }}
+              >
+                tools = [&quot;Terraform&quot;, &quot;EC2&quot;, &quot;S3&quot;, &quot;VPC&quot;,
+                &quot;IAM&quot;, &quot;RDS&quot;]
+              </p>
+              <p className="pl-4">foundation = [&quot;Linux&quot;, &quot;Python&quot;, &quot;Git&quot;]</p>
+              <p className="pl-4 pt-1.5">goal = &quot;AWS Cloud Engineer&quot;</p>
             </div>
             <div className="flex items-center gap-2 text-ink-faint">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              available for hire
+              <span className="h-1.5 w-1.5 rounded-full bg-aws animate-pulse" />
+              hands-on AWS &amp; Terraform projects
             </div>
           </div>
         </motion.div>

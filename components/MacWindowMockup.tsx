@@ -76,7 +76,7 @@ export default function MacWindowMockup({
           rotateY: tiltEnabled ? rotateY : 0,
           transformPerspective: 1200,
         }}
-        className="card-glass overflow-hidden rounded-[1.75rem] border border-slate-200/70 shadow-cardHover dark:border-slate-700/70"
+        className="card-glass overflow-hidden rounded-[1.75rem] border border-slate-200/70 shadow-cardHover will-change-transform dark:border-slate-700/70"
       >
         {/* Frosted window header */}
         <div className="flex items-center gap-2 border-b border-slate-200/70 bg-white/70 px-5 py-3.5 backdrop-blur-md dark:border-slate-700/60 dark:bg-surface-cardDark/70">
@@ -97,7 +97,6 @@ export default function MacWindowMockup({
               fill
               className="object-contain p-2 sm:p-3"
               onError={() => setFailed(true)}
-              unoptimized
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-secondary to-primary/80 text-white/80">

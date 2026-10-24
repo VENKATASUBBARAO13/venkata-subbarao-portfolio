@@ -46,10 +46,10 @@ export default function Contact() {
             Get in Touch
           </p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-secondary dark:text-white sm:text-4xl">
-            Hiring, or just want to talk shop?
+            Let&apos;s connect.
           </h2>
           <p className="mt-4 text-ink-soft dark:text-slate-400">
-            My inbox is open for full-time roles, internships, and honest feedback on the projects above.
+            I&apos;m open to opportunities where I can contribute, learn, and grow in cloud engineering, backend development, and software engineering.
           </p>
         </motion.div>
 

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Award, Calendar, ExternalLink, FileBadge } from "lucide-react";
-import { certifications, achievements } from "@/lib/data";
+import { Award, Calendar, Cloud, ExternalLink, FileBadge } from "lucide-react";
+import { certifications, achievements, cloudLearningNote } from "@/lib/data";
 
 function CertImage({ src, alt }: { src: string; alt: string }) {
   const [failed, setFailed] = useState(false);
@@ -25,14 +25,13 @@ function CertImage({ src, alt }: { src: string; alt: string }) {
       fill
       className="object-cover"
       onError={() => setFailed(true)}
-      unoptimized
     />
   );
 }
 
 export default function Achievements() {
   return (
-    <section className="section-pad">
+    <section id="certifications" className="section-pad">
       <div className="container-px">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -115,7 +114,7 @@ export default function Achievements() {
         </div>
 
         {/* Compact legacy credential badges */}
-        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-5 lg:grid-cols-4">
           {achievements.map((a, i) => (
             <motion.div
               key={a.title}
@@ -136,6 +135,27 @@ export default function Achievements() {
             </motion.div>
           ))}
         </div>
+
+        {/* Cloud Learning — explicitly separate from certifications above */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.55 }}
+          className="mx-auto mt-14 max-w-3xl"
+        >
+          <p className="mb-4 text-center text-xs font-semibold uppercase tracking-widest text-ink-faint">
+            Cloud Learning — not a certification
+          </p>
+          <div className="flex items-start gap-4 rounded-2xl border border-dashed border-aws/40 bg-aws/5 p-6">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-aws/10 text-aws">
+              <Cloud className="h-4.5 w-4.5" />
+            </div>
+            <p className="text-sm leading-relaxed text-ink-soft dark:text-slate-400">
+              {cloudLearningNote}
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

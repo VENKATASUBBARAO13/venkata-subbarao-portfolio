@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Download, Minus, Plus, X } from "lucide-react";
+import { Download, Loader2, Minus, Plus, X } from "lucide-react";
 import { profile } from "@/lib/data";
+import type { PDFDocumentProxy } from "pdfjs-dist";
+
+type Status = "idle" | "loading" | "ready" | "error";
 
 export default function ResumeModal({
   open,
@@ -13,11 +16,13 @@ export default function ResumeModal({
   onClose: () => void;
 }) {
   const [zoom, setZoom] = useState(1);
+  const [status, setStatus] = useState<Status>("idle");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pdfDocRef = useRef<PDFDocumentProxy | null>(null);
 
+  // Escape key + body scroll lock
   useEffect(() => {
     if (!open) return;
-    setZoom(1);
-
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -28,6 +33,92 @@ export default function ResumeModal({
       document.body.style.overflow = "";
     };
   }, [open, onClose]);
+
+  // Reset state each time the modal opens/closes
+  useEffect(() => {
+    if (open) {
+      setZoom(1);
+      setStatus("idle");
+    } else {
+      pdfDocRef.current = null;
+    }
+  }, [open]);
+
+  // Load + render the first page onto a canvas ourselves. This is
+  // deliberately NOT an <iframe>/<object> pointing at the PDF: some browsers
+  // are configured to always download PDFs rather than view them, and that
+  // setting can intercept embedded PDFs too, leaving an iframe blank or
+  // stuck loading forever with no way for page script to override it.
+  // Drawing the file onto a canvas sidesteps the browser's PDF handling
+  // entirely — as far as the browser is concerned, it's just pixels.
+  //
+  // The pdf.js worker is bundled locally (via the `new URL(..., import.meta.url)`
+  // pattern below) rather than fetched from a CDN, so this also works with
+  // no external network access and no risk of a CDN outage or version
+  // mismatch breaking the preview.
+  useEffect(() => {
+    if (!open || !canvasRef.current) return;
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      if (!cancelled) {
+        cancelled = true;
+        setStatus("error");
+      }
+    }, 10000);
+
+    async function render() {
+      setStatus("loading");
+      try {
+        const pdfjsLib = await import("pdfjs-dist");
+        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url
+        ).toString();
+
+        if (!pdfDocRef.current) {
+          pdfDocRef.current = await pdfjsLib.getDocument(profile.resumeUrl).promise;
+        }
+        if (cancelled) return;
+
+        const page = await pdfDocRef.current.getPage(1);
+        const viewport = page.getViewport({ scale: zoom * 1.6 });
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext("2d");
+        if (!canvas || !context) return;
+
+        const outputScale = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+        await page.render({
+          canvasContext: context,
+          viewport,
+          transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
+        }).promise;
+
+        if (!cancelled) {
+          cancelled = true;
+          clearTimeout(timeout);
+          setStatus("ready");
+        }
+      } catch (err) {
+        console.error("Resume preview failed to render:", err);
+        if (!cancelled) {
+          cancelled = true;
+          clearTimeout(timeout);
+          setStatus("error");
+        }
+      }
+    }
+
+    render();
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [open, zoom]);
 
   return (
     <AnimatePresence>
@@ -87,24 +178,28 @@ export default function ResumeModal({
 
             {/* Body */}
             <div className="flex-1 overflow-auto bg-surface p-4 dark:bg-surface-dark sm:p-6">
-              <div
-                className="mx-auto origin-top transition-transform duration-200"
-                style={{ transform: `scale(${zoom})`, width: "100%" }}
-              >
-                <div className="aspect-[8.5/11] w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-card dark:border-slate-700">
-                  <object
-                    data={`${profile.resumeUrl}#page=1&view=FitH`}
-                    type="application/pdf"
-                    className="h-full w-full"
-                    aria-label="Resume first page preview"
-                  >
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-8 text-center text-sm text-ink-faint">
-                      <p>
-                        Add your resume at <span className="font-mono">/public/resume.pdf</span>{" "}
-                        to see a live preview here.
-                      </p>
+              <div className="flex min-h-full items-start justify-center">
+                <div className="relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-card dark:border-slate-700">
+                  <canvas
+                    ref={canvasRef}
+                    className={status === "ready" ? "block" : "hidden"}
+                  />
+
+                  {status !== "ready" && (
+                    <div className="flex h-[500px] w-[360px] flex-col items-center justify-center gap-3 p-8 text-center text-sm text-ink-faint">
+                      {status === "error" ? (
+                        <p>
+                          Couldn&apos;t render the preview here. Use Download Resume below
+                          instead.
+                        </p>
+                      ) : (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                          <p>Loading preview…</p>
+                        </>
+                      )}
                     </div>
-                  </object>
+                  )}
                 </div>
               </div>
             </div>
@@ -113,7 +208,7 @@ export default function ResumeModal({
             <div className="flex items-center justify-end gap-3 border-t border-slate-200/70 bg-white/70 px-5 py-3.5 backdrop-blur-md dark:border-slate-700/60 dark:bg-surface-cardDark/70">
               <a
                 href={profile.resumeUrl}
-                download
+                download={profile.resumeFileName}
                 className="flex items-center gap-2 rounded-full bg-secondary px-5 py-2.5 text-xs font-medium text-white transition-transform duration-200 hover:scale-[1.03] hover:bg-primary dark:bg-primary"
               >
                 <Download className="h-3.5 w-3.5" />

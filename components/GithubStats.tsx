@@ -6,12 +6,10 @@ import {
   Github,
   Linkedin,
   ArrowUpRight,
-  Star,
-  GitFork,
   BookOpen,
   Sparkles,
 } from "lucide-react";
-import { profile, featuredRepoNames, learningRepoFallback } from "@/lib/data";
+import { profile, featuredRepos, practiceExcludedRepoNames, learningRepoFallback } from "@/lib/data";
 import MacWindowMockup from "./MacWindowMockup";
 
 const username = "VENKATASUBBARAO13";
@@ -27,7 +25,9 @@ type GhRepo = {
 };
 
 export default function GithubStats() {
-  const [featured, setFeatured] = useState<GhRepo[]>([]);
+  // Featured repos are static (README-verified, see lib/data.ts) so they never
+  // depend on the GitHub API. Only the practice-repo list below is fetched live,
+  // and it falls back to a static list if the API call fails.
   const [learning, setLearning] = useState<GhRepo[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
@@ -43,18 +43,11 @@ export default function GithubStats() {
         const data: GhRepo[] = await res.json();
         if (cancelled) return;
 
-        const featuredSet = new Set(featuredRepoNames.map((n) => n.toLowerCase()));
-        const foundFeatured = featuredRepoNames
-          .map((name) =>
-            data.find((r) => r.name.toLowerCase() === name.toLowerCase())
-          )
-          .filter((r): r is GhRepo => Boolean(r));
-
+        const excluded = new Set(practiceExcludedRepoNames.map((n) => n.toLowerCase()));
         const rest = data
-          .filter((r) => !r.fork && !featuredSet.has(r.name.toLowerCase()))
+          .filter((r) => !r.fork && !excluded.has(r.name.toLowerCase()))
           .slice(0, 6);
 
-        setFeatured(foundFeatured);
         setLearning(rest);
         setStatus("ready");
       } catch {
@@ -99,7 +92,7 @@ export default function GithubStats() {
           <motion.a
             href={profile.github}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="flex items-center gap-2 rounded-full bg-secondary px-6 py-3.5 text-sm font-medium text-white shadow-cardHover hover:bg-primary dark:bg-primary"
@@ -109,62 +102,50 @@ export default function GithubStats() {
           </motion.a>
         </motion.div>
 
-        {/* Featured repositories */}
+        {/* Featured repositories — the four AWS projects, in order */}
         <div className="mx-auto mt-16 max-w-4xl">
           <div className="mb-6 flex items-center gap-2">
-            <Star className="h-4 w-4 text-primary" />
+            <Github className="h-4 w-4 text-primary" />
             <h3 className="font-display text-lg font-semibold text-secondary dark:text-white">
               Featured Repositories
             </h3>
+            <span className="ml-1 rounded-full bg-aws/10 px-2.5 py-0.5 text-[11px] font-medium text-aws">
+              AWS projects
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {(status === "ready" && featured.length > 0
-              ? featured
-              : featuredRepoNames.map((name) => ({
-                  name,
-                  description: null,
-                  html_url: `${profile.github}/${name}`,
-                  stargazers_count: 0,
-                  forks_count: 0,
-                  language: null,
-                  fork: false,
-                }))
-            ).map((repo, i) => (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            {featuredRepos.map((repo, i) => (
               <motion.a
                 key={repo.name}
-                href={repo.html_url}
+                href={repo.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.45, delay: i * 0.08 }}
+                transition={{ duration: 0.45, delay: (i % 2) * 0.08 }}
                 whileHover={{ y: -5 }}
-                className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition-shadow hover:shadow-cardHover dark:border-slate-700 dark:bg-surface-cardDark"
+                className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-card transition-shadow hover:shadow-cardHover dark:border-slate-700 dark:bg-surface-cardDark"
               >
-                <div className="flex items-center justify-between">
-                  <span className="truncate font-mono text-sm font-medium text-secondary group-hover:text-primary dark:text-white">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="break-all font-mono text-sm font-medium text-secondary group-hover:text-primary dark:text-white">
                     {repo.name}
                   </span>
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-ink-faint group-hover:text-primary" />
                 </div>
-                <p className="mt-2 line-clamp-2 flex-1 text-xs text-ink-soft dark:text-slate-400">
-                  {repo.description ?? "View the source and README on GitHub."}
+                <p className="mt-2 flex-1 text-xs leading-relaxed text-ink-soft dark:text-slate-400">
+                  {repo.description}
                 </p>
-                <div className="mt-4 flex items-center gap-4 text-xs text-ink-faint">
-                  {repo.language && (
-                    <span className="flex items-center gap-1">
-                      <span className="h-2 w-2 rounded-full bg-accent" />
-                      {repo.language}
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {repo.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-primary/5 px-2 py-0.5 text-[11px] font-medium text-primary dark:bg-primary/10"
+                    >
+                      {tag}
                     </span>
-                  )}
-                  <span className="flex items-center gap-1">
-                    <Star className="h-3 w-3" /> {repo.stargazers_count}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <GitFork className="h-3 w-3" /> {repo.forks_count}
-                  </span>
+                  ))}
                 </div>
               </motion.a>
             ))}
@@ -176,10 +157,10 @@ export default function GithubStats() {
           <div className="mb-6 flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-primary" />
             <h3 className="font-display text-lg font-semibold text-secondary dark:text-white">
-              Learning Journey
+              Practice Repositories
             </h3>
             <span className="ml-1 rounded-full bg-primary/5 px-2.5 py-0.5 text-[11px] font-medium text-primary dark:bg-primary/10">
-              Practice repositories
+              Earlier learning
             </span>
           </div>
 
@@ -200,7 +181,7 @@ export default function GithubStats() {
                 key={repo.name}
                 href={repo.html_url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
@@ -245,7 +226,7 @@ export default function GithubStats() {
             <a
               href={profile.github}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="flex shrink-0 items-center gap-1.5 rounded-full bg-secondary px-4 py-2 text-xs font-medium text-white hover:bg-primary dark:bg-primary"
             >
               View <ArrowUpRight className="h-3.5 w-3.5" />
@@ -273,7 +254,7 @@ export default function GithubStats() {
             <a
               href={profile.linkedin}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#0A66C2] px-4 py-2 text-xs font-medium text-white hover:bg-[#0A66C2]/90"
             >
               Connect <ArrowUpRight className="h-3.5 w-3.5" />

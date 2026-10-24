@@ -1,29 +1,50 @@
+import { awsProjects, terraformPractice } from "./aws-data";
+
 export const profile = {
   name: "Ventrapragada Venkata Subbarao",
   shortName: "Venkata Subbarao",
   firstName: "Venkata Subbarao",
   location: "Vijayawada, Andhra Pradesh, India",
-  roles: ["Python Developer", "Full Stack Developer", "AI & Cloud Computing Enthusiast"],
-  email: "venkatasubbarao.dev@gmail.com",
+  roles: [
+    "AWS Cloud Engineer",
+    "Terraform & AWS Infrastructure",
+    "Infrastructure as Code (IaC) Practitioner",
+    "Cloud Infrastructure Builder",
+  ],
+  email: "venkatasubbarao1305@gmail.com",
   github: "https://github.com/VENKATASUBBARAO13",
   linkedin: "https://www.linkedin.com/in/ventrapragada-venkata-subbarao",
+  linkedinPostsUrl: "https://www.linkedin.com/in/ventrapragada-venkata-subbarao/recent-activity/all/",
+  portfolioUrl: "https://venkata-subbarao-portfolio.vercel.app",
   resumeUrl: "/resume.pdf",
+  resumeFileName: "Resume_Subbarao_AWS_.pdf",
+  heroEyebrow: "2026 CSE Graduate • Open to Opportunities",
   heroDescription:
-    "I build scalable full-stack web applications, AI-powered solutions, and modern web applications using Python, Django, and MySQL. Passionate about solving real-world problems through software while continuously learning Cloud Computing and Artificial Intelligence.",
+    "I'm a 2026 Computer Science Engineering graduate with hands-on AWS cloud project experience and completed Terraform learning. I build cloud infrastructure, deploy applications, configure networking and security, monitor resources, and use Infrastructure as Code to organize reusable AWS infrastructure.",
   summary:
-    "I'm a Computer Science graduate who enjoys building complete web applications—from responsive user interfaces to scalable backend systems and production-ready deployments. My projects combine Python, Django, MySQL, REST APIs, and AI technologies to solve practical problems. Most recently, I built a DeepFake Detection System using PyTorch, OpenCV, and ResNet18 within a full-stack Django application.",
+    "Computer Science Engineering graduate with hands-on AWS cloud project experience covering application deployment, cloud networking, monitoring, security, automation, and serverless workflows, plus completed Terraform learning. My featured projects include a modular three-tier Terraform infrastructure, a Flask and RDS e-commerce app behind HTTPS, a Prometheus and Grafana monitoring stack on EC2, automated log archival with CloudWatch, Lambda, EventBridge and S3, and a three-tier web application on load-balanced EC2 tiers. Along the way I practice Linux administration and troubleshooting.",
   objective:
-    "Seeking a full-time Software Engineer role — Backend, Full Stack, or Applied AI — where I can build production systems and keep learning cloud-native practices on the job.",
+    "Python, Flask, Django, MySQL, REST APIs and AI/ML are my software development foundation — they help me understand the applications I deploy. I'm targeting AWS Cloud Engineer, Cloud Support Engineer, and Junior DevOps roles, and I learn by building, troubleshooting, and documenting.",
   footerQuote: "Always learning. Always building. Always improving.",
+  footerTagline: "AWS Cloud Engineer | Cloud Infrastructure | Networking & Security",
+  finalCtaHeading: "Let's build something in the cloud.",
+  finalCtaText:
+    "I'm actively learning AWS and looking for opportunities where I can apply my software development foundation while growing as a cloud engineer.",
 };
 
+// AWS services shown as animated badges in the hero. Keep this list honest —
+// only services you've actually explored or are actively practicing.
 export const heroTechBadges = [
-  "Python",
-  "Django",
-  "MySQL",
-  "REST APIs",
-  "AI/ML",
-  "Cloud Computing",
+  "AWS",
+  "Terraform",
+  "EC2",
+  "S3",
+  "VPC",
+  "IAM",
+  "RDS",
+  "CloudWatch",
+  "Lambda",
+  "Linux",
 ];
 
 export type EducationItem = {
@@ -59,19 +80,37 @@ export const education: EducationItem[] = [
 export type Project = {
   id: string;
   name: string;
-  period: string;
+  category: "aws" | "software";
+  period?: string;
+  status?: string;
   stack: string[];
   summary: string;
   bullets: string[];
-  github: string;
+  github?: string;
   demo?: string;
   featured?: boolean;
 };
 
-export const projects: Project[] = [
+// The four AWS projects come straight from lib/aws-data.ts so there is one
+// source of truth (README-verified) for both the AWS Cloud Projects overview
+// and this Selected Projects timeline. Their order is the order shown.
+const awsProjectCards: Project[] = awsProjects.map((p) => ({
+  id: p.id,
+  name: p.name,
+  category: "aws",
+  status: p.status,
+  stack: [...(p.iac ?? []), ...p.awsServices, ...p.tools],
+  summary: p.summary,
+  bullets: [`Architecture: ${p.architecture}`, ...p.highlights],
+  github: p.github,
+}));
+
+// Earlier software projects — kept as "Other Projects" beneath the AWS work.
+const softwareProjectCards: Project[] = [
   {
     id: "deepfake",
     name: "DeepFake Detection System",
+    category: "software",
     period: "Dec 2025 — Apr 2026",
     stack: ["Python", "Django", "PyTorch", "OpenCV", "ResNet18", "MySQL", "Bootstrap"],
     summary:
@@ -84,11 +123,11 @@ export const projects: Project[] = [
       "Admin dashboard for reviewing detection history",
     ],
     github: "https://github.com/VENKATASUBBARAO13/DeepFake-Detection-System",
-    featured: true,
   },
   {
     id: "sims",
     name: "Student Information Management System",
+    category: "software",
     period: "Jun 2025 — Sep 2025",
     stack: ["Python", "Flask", "MySQL", "HTML", "CSS", "JavaScript"],
     summary:
@@ -104,6 +143,7 @@ export const projects: Project[] = [
   {
     id: "currency",
     name: "Currency Converter Web Application",
+    category: "software",
     period: "Mar 2025 — May 2025",
     stack: ["Python", "Django", "HTML", "CSS", "REST API", "Render"],
     summary:
@@ -119,19 +159,109 @@ export const projects: Project[] = [
   },
 ];
 
+export const projects: Project[] = [...awsProjectCards, ...softwareProjectCards];
+
 export type SkillGroup = {
   label: string;
-  level: number;
+  emoji: string;
   items: string[];
+  featured?: boolean;
+  /** Smaller, secondary styling for the supporting development groups. */
+  compact?: boolean;
 };
 
+// The general "Toolkit" section (distinct from the dedicated AWS & Cloud
+// Skills section). AWS & Cloud leads and is visually emphasized. Every skill
+// listed here is completed and uses the same tag style.
 export const skills: SkillGroup[] = [
-  { label: "Programming", level: 88, items: ["Python", "JavaScript", "HTML", "CSS"] },
-  { label: "Backend", level: 85, items: ["Django", "Flask", "REST APIs"] },
-  { label: "Frontend", level: 75, items: ["HTML", "CSS", "Tailwind", "Bootstrap"] },
-  { label: "Database", level: 80, items: ["MySQL"] },
-  { label: "AI / ML", level: 72, items: ["PyTorch", "OpenCV", "ResNet18"] },
-  { label: "Cloud & Tools", level: 78, items: ["Render", "Git", "GitHub"] },
+  {
+    label: "AWS & Cloud",
+    emoji: "☁️",
+    items: [
+      "EC2",
+      "S3",
+      "VPC",
+      "IAM",
+      "RDS",
+      "Route 53",
+      "CloudWatch",
+      "CloudFront",
+      "CloudTrail",
+      "Lambda",
+      "DynamoDB",
+      "API Gateway",
+      "EventBridge",
+      "AWS Config",
+      "AWS WAF",
+      "ACM",
+    ],
+    featured: true,
+  },
+  {
+    label: "Networking & Infrastructure",
+    emoji: "🌐",
+    items: [
+      "CIDR",
+      "Public/Private Subnets",
+      "Route Tables",
+      "Internet Gateway",
+      "NAT Gateway",
+      "Security Groups",
+      "VPC Endpoints",
+      "VPC Peering",
+      "ALB",
+      "Target Groups",
+      "Auto Scaling",
+    ],
+  },
+  {
+    label: "Infrastructure as Code",
+    emoji: "🧱",
+    items: [
+      "Terraform",
+      "Terraform Modules",
+      "Variables and Outputs",
+      "Environment-specific Configurations",
+      "Infrastructure Planning and Validation",
+    ],
+  },
+  {
+    label: "Monitoring & Observability",
+    emoji: "📈",
+    items: [
+      "CloudWatch",
+      "CloudWatch Logs",
+      "CloudWatch Agent",
+      "Prometheus",
+      "Grafana",
+      "Node Exporter",
+      "Alertmanager",
+      "PagerDuty",
+    ],
+  },
+  {
+    label: "Linux & Tools",
+    emoji: "🛠️",
+    items: ["Linux", "Amazon Linux", "Nginx", "AWS CLI", "Git", "GitHub", "VS Code"],
+  },
+  {
+    label: "Programming & Databases",
+    emoji: "💻",
+    items: ["Python", "SQL", "MySQL", "Boto3", "Flask", "Django", "REST APIs"],
+    compact: true,
+  },
+  {
+    label: "Web Development",
+    emoji: "🧩",
+    items: ["HTML", "CSS", "JavaScript"],
+    compact: true,
+  },
+  {
+    label: "AI / ML",
+    emoji: "🤖",
+    items: ["PyTorch", "OpenCV", "ResNet18"],
+    compact: true,
+  },
 ];
 
 export type Certification = {
@@ -182,25 +312,77 @@ export const certifications: Certification[] = [
 ];
 
 // Legacy short-form credentials, still shown alongside the certification cards above.
+// These are real completed certifications — kept separate from the AWS learning
+// content elsewhere on the site, which is practice, not a certification.
 export const achievements = [
   {
-    title: "GeeksforGeeks — Python Programming",
-    org: "GeeksforGeeks",
+    title: "Microsoft Azure Fundamentals",
+    org: "Microsoft",
+  },
+  {
+    title: "Google Cloud AI",
+    org: "Google Cloud",
   },
   {
     title: "TCS iON Career Edge — Young Professional",
     org: "Tata Consultancy Services",
   },
   {
-    title: "SQL (Structured Query Language)",
-    org: "Simplilearn",
+    title: "GeeksforGeeks — Python Programming",
+    org: "GeeksforGeeks",
   },
 ];
 
-// Repos to always feature first on the GitHub section, in this order, regardless
-// of what the GitHub API returns. Everything else the API returns (excluding forks
-// and these three) is bucketed into the "Learning Journey" list below.
-export const featuredRepoNames = [
+export const cloudLearningNote =
+  "AWS is currently hands-on learning and practice, not yet a certification. Progress is documented in the AWS Learning Journey and Learning in Public sections below — an AWS certification badge will appear here the moment one is earned.";
+
+export type FeaturedRepo = {
+  name: string;
+  title: string;
+  description: string;
+  tags: string[];
+  url: string;
+};
+
+// The four AWS repositories, in display order. Descriptions are written from
+// each repository's README (not the GitHub "About" tagline, which for the
+// full-stack repo lists services its README does not document).
+const featuredRepoDescriptions: Record<string, string> = {
+  "terraform-three-tier":
+    "Modular Terraform infrastructure for a three-tier AWS application: networking, bastion, frontend and backend launch templates, Auto Scaling Groups, separate ALBs and a private RDS MySQL database, with dev, test and prod entry points. Includes a screenshot gallery.",
+  "aws-ecommerce":
+    "Flipkart-style e-commerce app on EC2 with an RDS MySQL backend, ALB + ACM HTTPS, a Route 53 custom domain and an Nginx reverse proxy. Includes step-by-step deployment docs and screenshots.",
+  "aws-monitoring":
+    "Prometheus, Grafana and Node Exporter on EC2 with a CloudWatch data source, plus Alertmanager → PagerDuty alerting with alert and recovery testing.",
+  "aws-log-automation":
+    "CloudWatch Agent log collection from EC2 into CloudWatch Logs, with Lambda (Python/Boto3), EventBridge and S3 for automated log archival.",
+  "aws-full-stack":
+    "UserFlow CRUD app on a three-tier AWS architecture: frontend and Flask backend on EC2 behind ALBs, an RDS MySQL data tier, and a custom domain via Route 53.",
+};
+
+// Display order: the five AWS projects (Terraform first), then the Terraform
+// practice repository last.
+export const featuredRepos: FeaturedRepo[] = [
+  ...awsProjects.map((p) => ({
+    name: p.github.split("/").pop() ?? p.name,
+    title: p.name,
+    description: featuredRepoDescriptions[p.id] ?? p.summary,
+    tags: [...(p.iac ?? []), ...p.awsServices],
+    url: p.github,
+  })),
+  {
+    name: terraformPractice.github.split("/").pop() ?? terraformPractice.name,
+    title: terraformPractice.name,
+    description: terraformPractice.summary,
+    tags: terraformPractice.tags,
+    url: terraformPractice.github,
+  },
+];
+
+// Repos already shown elsewhere on the page; excluded from the live
+// "Learning Journey" practice-repository list so it stays about practice repos.
+export const practiceExcludedRepoNames = [
+  ...featuredRepos.map((r) => r.name),
   "DeepFake-Detection-System",
   "Student-Information-Management-System",
   "django-currency-converter",
