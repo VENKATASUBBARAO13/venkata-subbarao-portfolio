@@ -34,7 +34,7 @@ export default function AnimatedCounter({
 
   return (
     <motion.span ref={ref} className={className}>
-      0{suffix}
+      {decimals > 0 ? value.toFixed(decimals) : value.toString()}{suffix}
     </motion.span>
   );
 }
